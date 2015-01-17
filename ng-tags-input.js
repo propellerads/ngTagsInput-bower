@@ -234,7 +234,8 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                 maxTags: [Number, MAX_SAFE_INTEGER],
                 displayProperty: [String, 'text'],
                 allowLeftoverText: [Boolean, false],
-                addFromAutocompleteOnly: [Boolean, false]
+                addFromAutocompleteOnly: [Boolean, false],
+                allowAddOnCommaFirstFromAutocomplete: [Boolean, false]
             });
 
             $scope.tagList = new TagList($scope.options, $scope.events);
@@ -354,6 +355,7 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                         addKeys = {},
                         shouldAdd, shouldRemove;
 
+
                     if (isModifier || hotkeys.indexOf(key) === -1) {
                         return;
                     }
@@ -362,11 +364,22 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                     addKeys[KEYS.comma] = options.addOnComma;
                     addKeys[KEYS.space] = options.addOnSpace;
 
-                    shouldAdd = !options.addFromAutocompleteOnly && addKeys[key];
+                    shouldAdd = !options.addFromAutocompleteOnly;
+                    if (!shouldAdd) {
+                        shouldAdd = options.allowAddOnCommaFirstFromAutocomplete;
+                    }
+                    if (shouldAdd) {
+                        shouldAdd = addKeys[key];
+                    }
+
                     shouldRemove = !shouldAdd && key === KEYS.backspace && scope.newTag.text.length === 0;
 
                     if (shouldAdd) {
-                        tagList.addText(scope.newTag.text);
+                        if (options.allowAddOnCommaFirstFromAutocomplete) {
+                            scope.$broadcast('addFirstSuggestion');
+                        } else {
+                            tagList.addText(scope.newTag.text);
+                        }
 
                         scope.$apply();
                         e.preventDefault();
@@ -549,6 +562,10 @@ tagsInput.directive('autoComplete', ["$document","$timeout","$sce","tagsInputCon
             };
 
             scope.suggestionList = suggestionList;
+
+            scope.$on('addFirstSuggestion', function() {
+                scope.addSuggestionByIndex(0);
+            });
 
             scope.addSuggestionByIndex = function(index) {
                 suggestionList.select(index);
