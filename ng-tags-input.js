@@ -208,7 +208,8 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
         scope: {
             tags: '=ngModel',
             onTagAdded: '&',
-            onTagRemoved: '&'
+            onTagRemoved: '&',
+            onPaste: '&'
         },
         replace: false,
         transclude: true,
@@ -316,6 +317,22 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                     if (validationOptions.indexOf(e.name) !== -1) {
                         setElementValidity();
                     }
+                })
+                .on('input-paste', function(data) {
+                    scope.onPaste(data)
+                        .then(function(items) {
+                            var unmatchedQueries = [];
+
+                            items.forEach(function (item) {
+                                if (item.matched) {
+                                    tagList.add(item.tag);
+                                } else {
+                                    unmatchedQueries.push(item.query);
+                                }
+                            });
+
+                            scope.newTag.text = unmatchedQueries.join(',');
+                        });
                 });
 
             scope.newTag = { text: '', invalid: null };
@@ -337,7 +354,10 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                 tagList.items = scope.tags;
             });
 
-            scope.$watch('tags.length', function() {
+            scope.$watch('tags.length', function(newTagsLength) {
+                if (newTagsLength === 0) {
+                    scope.newTag.text = '';
+                }
                 setElementValidity();
             });
 
@@ -415,6 +435,9 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                             events.trigger('input-blur');
                         }
                     });
+                })
+                .on('paste', function(e) {
+                    events.trigger('input-paste', {data: e.clipboardData.getData('text/plain')});
                 });
 
             element.find('div').on('click', function() {
