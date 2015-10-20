@@ -1,0 +1,19 @@
+{
+  "name": "ng-tags-input",
+  "version": "2.1.1",
+  "description": "Tags input directive for AngularJS",
+  "main": "ng-tags-input.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/propellerads/ngTagsInput-bower.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/propellerads/ngTagsInput-bower/issues"
+  },
+  "homepage": "https://github.com/propellerads/ngTagsInput-bower#readme"
+}
