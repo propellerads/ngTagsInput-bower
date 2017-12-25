@@ -1,6 +1,6 @@
 {
   "name": "ng-tags-input",
-  "version": "2.1.2",
+  "version": "2.1.1",
   "description": "Tags input directive for AngularJS",
   "main": "ng-tags-input.js",
   "scripts": {

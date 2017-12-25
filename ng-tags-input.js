@@ -587,12 +587,7 @@ tagsInput.directive('autoComplete', ["$document","$timeout","$sce","tagsInputCon
             scope.suggestionList = suggestionList;
 
             scope.$on('addFirstSuggestion', function() {
-                var idx = 0;
-                if (suggestionList.selected && suggestionList.selected.id) {
-                    idx = suggestionList.items.indexOf(suggestionList.selected);
-                }
-
-                scope.addSuggestionByIndex(idx);
+                scope.addSuggestionByIndex(0);
             });
 
             scope.addSuggestionByIndex = function(index) {
