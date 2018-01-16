@@ -372,9 +372,9 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
 
                     var key = e.keyCode,
                         isModifier = e.shiftKey || e.altKey || e.ctrlKey || e.metaKey,
+                        isEnter = key === KEYS.enter,
                         addKeys = {},
                         shouldAdd, shouldRemove;
-
 
                     if (isModifier || hotkeys.indexOf(key) === -1) {
                         return;
@@ -395,7 +395,9 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                     shouldRemove = !shouldAdd && key === KEYS.backspace && scope.newTag.text.length === 0;
 
                     if (shouldAdd) {
-                        if (options.allowAddOnCommaFirstFromAutocomplete) {
+                        if (isEnter) {
+                            scope.$broadcast('addSuggestion');
+                        } else if (options.allowAddOnCommaFirstFromAutocomplete) {
                             scope.$broadcast('addFirstSuggestion');
                         } else {
                             tagList.addText(scope.newTag.text);
@@ -588,6 +590,10 @@ tagsInput.directive('autoComplete', ["$document","$timeout","$sce","tagsInputCon
 
             scope.$on('addFirstSuggestion', function() {
                 scope.addSuggestionByIndex(0);
+            });
+
+            scope.$on('addSuggestion', function() {
+                scope.addSuggestion();
             });
 
             scope.addSuggestionByIndex = function(index) {
