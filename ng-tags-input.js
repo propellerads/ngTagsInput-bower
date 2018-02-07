@@ -347,9 +347,6 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
             };
 
             scope.isInvalid = function(tag) {
-                if (scope.exceptionListById) {
-                    console.log(scope.exceptionListById);
-                }
                 return (scope.exceptionListById && scope.exceptionListById.includes(tag.id));
             };
 
